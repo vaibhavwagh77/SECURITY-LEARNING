@@ -1,0 +1,215 @@
+Nginx Simple Web Server:[Dedicated Hosting]
+`````````````````````````
+RedHat/CentOS:
+```````````````
+# yum install nginx -y
+
+Debian:
+````````
+# apt update
+# apt install nginx -y
+
+# systemctl start nginx
+# systemctl enable nginx
+
+
+
+
+
+
+
+Default DocumentRoot for RedHat/CentOS: /usr/share/nginx/html
+
+Default DocumentRoot for Debian: 
+/var/www/html
+
+
+
+
+
+
+
+
+
+On centOS:
+``````````
+# cd /usr/share/nginx/html
+# cat > index.html
+<html>
+	<body>
+		<h1> Basic Nginx Web Server </h1>
+	</body>
+</html>
+^D
+
+On Debian:
+``````````
+# cd /var/www/html
+# cat > index.html
+<html>
+	<body>
+		<h1> Basic Nginx Web Server </h1>
+	</body>
+</html>
+^D
+
+
+# systemctl restart nginx
+
+To check:
+``````````
+# curl http://x.x.x.x:80
+<html>
+	<body>
+		<h1> Basic Nginx Web Server </h1>
+	</body>
+</html>
+____________________________________________________________________________________
+
+Virtual DNS:
+````````````
+# vim /etc/named.conf
+
+# abc.com Forward zone
+zone "abc.com" IN {
+        type master;
+        file "for.abc.com";
+};
+
+:wq
+
+
+
+# cd /var/named
+# cp -av for.hpcsa.com for.abc.com
+# vim for.abc.com
+$TTL 1D
+@       IN SOA master.hpcsa.com. dheeraj@gmail.com. (
+                                        0       ; serial
+                                        1D      ; refresh
+                                        1H      ; retry
+                                        1W      ; expire
+                                        3H )    ; minimum
+        IN      NS      master.hpcsa.com.
+abc.com.        IN      A       192.168.82.22
+www.abc.com.    IN      A       192.168.82.22
+
+# systemctl restart named
+# host abc.com
+# host www.abc.com
+-----------------------------------------
+Shared/Virtual Hosting using Nginx:
+````````````````````````````````````
+0) Enable virtual hosting in nginx.conf:
+`````````````````````````````````````````
+# mkdir /etc/nginx/{sites-available, sites-enabled}
+# vim /etc/nginx/nginx.conf
+
+http {
+	...already_provided_conf....
+	include /etc/nginx/conf.d/*.conf
+	include /etc/nginx/sites-enabled/*.conf  <<<<<<<<<< Add this
+	server {
+		...already_provided_conf....
+		}
+}
+:wq
+
+1) Setting Up New Document Root Directories & sample HTML pages
+````````````````````````````````````````````````````````````````
+# mkdir /usr/share/nginx/html <<<< Main DNS (hpcsa.com)
+# cat > /usr/share/nginx/html/index.html
+<h1> Hpcsa main server </h1>
+# mkdir /usr/share/nginx/html/abc.com <<<< Virtual DNS (abc.com)
+# cat > /usr/share/nginx/html/abc.com/index.html
+<h1> ABC vhost main server </h1>
+
+2) Creating the Server config for vhosts:
+``````````````````````````````````````````
+a) hpcsa.conf [Creating the MAIN Server config]
+```````````````````````````````````````````````````
+# cat /etc/nginx/sites-available/hpcsa.conf
+server {
+        listen 80 default_server;
+        root /usr/share/nginx/html;
+
+        index index.html;
+        server_name hpcsa.com www.hpcsa.com;
+        access_log /var/log/nginx/hpcsa.com_access_log;
+        error_log /var/log/nginx/hpcsa.com_error_log;
+}
+NOTE: Only one of our server blocks on the server can have the default_server option enabled.
+
+a) abc.conf [Creating the vhost Server config]
+```````````````````````````````````````````````````
+# cat /etc/nginx/sites-available/abc.conf
+server {
+        listen 80;
+        root /usr/share/nginx/html/abc.com;
+
+        index index.html;
+        server_name abc.com www.abc.com;
+        access_log /var/log/nginx/abc.com_access_log;
+        error_log /var/log/nginx/abc.com_error_log;
+}
+
+3) Enabling your Server configs and Restart Nginx:
+````````````````````````````````````````````````````
+
+# ln -s /etc/nginx/sites-available/hpcsa.conf /etc/nginx/sites-enabled/hpcsa.conf
+# ln -s /etc/nginx/sites-available/abc.conf /etc/nginx/sites-enabled/abc.conf
+
+4) restart nginx service:
+`````````````````````````
+# systemctl restart nginx
+
+5) Visit:
+``````````
+http://hpcsa.com
+http://abc.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

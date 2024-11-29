@@ -1,0 +1,73 @@
+- Intro to Information Security:
+--------
+
+We must understand terms:
+
+1. Information Security[ InfoSec ]:
+````````````````````````
+-> What is Information: [Differ b/w Info & Data]
+> Meaningful form of data
+> Can be called as processed data
+> Data has no context, info does
+eg:
+> Computer is data
+> This is my computer is information
+
+
+
+
+
+
+
+NOTE: Information in digital systems makes cyber security [Information involving cyber space].
++_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+
+
+
+
+
+
+
+
+2. Information Security Threats:
+--------------------------------
+> Threat is a constant danger to an asset
+> It can be a person, object or an event
+> Threat can be categorized and ranked
+
+Type of Threats :
+`````````````````
+1. Inadvertent Threat	[ Human Failure ]
+2. Physical Threat 	[ Natural disasters ]
+3. Technical Failure	[ Hardware / Software ]
+4. Deliberate acts	[ Hacking / Espionage ]
++_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+
+
+
+
+
+
+3. Introduction to Cyber Security:
+----------------------------------
+> Information Security does not deal with?
+
+	- Cyber Warfare		[Govt Web Hacks, DDOS, etc.]
+	- Information Warfare	[Intel]
+	- Negative Impact of people on Internet ( sexual abuse, cyber stalking, etc. )
+	- IoT Security
+
+Then who deal with them?
+
+> Cyber Security:
+	- Protection of Cyber Space against Cyber Threats and Cyber Space vulnerabilities.
+	- Any threats to Information via Cyber Space
+	- Deal with Deliberate acts
+	- Doesn't deal with physical and personal security
+	- Threats via Cyber Space, not threats for Cyber Space.
+
+> Objective of Cyber Security:
+	- Confidentiality	: No telling to unauthorized parties
+	- Integrity		: Completeness and accuracy of data
+	- Availability		: When needed, data is available
+	- Non-repudiation	: I should accept i sent you the message and you should accept you received it.
+	- Authenticity		: You should actually be who you tell you are
++_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+

@@ -1,0 +1,106 @@
+
+IDS/IPS (SPI/DPI)
+```````````````````
+
+What is a Intrusion Detection System?
+`````````````````````````````````````
+- An intrusion detection system (IDS) is a device or software application that monitors a network for malicious activity or policy violations. 
+
+- Some IDSâ€™s are capable of responding to detected intrusion upon discovery.
+
+IDS Detection Types
+````````````````````
++ Network intrusion detection systems (NIDS)
+````````````````````````````````````````````
+	- A system/hardware that analyzes incoming network traffic.
+
+
+
+
++ Host-based intrusion detection systems (HIDS)
+```````````````````````````````````````````````
+	- A system that monitors important operating system files.
+
+
+
+
++ Protocol-based Intrusion Detection System (PIDS):
+```````````````````````````````````````````````````
+	- It is trying to secure the web server by regularly monitoring the HTTPS protocol stream and accept the related HTTP protocol.
+
+
+
++ Application Protocol-based Intrusion Detection System (APIDS):
+````````````````````````````````````````````````````````````````
+	- It identifies the intrusions by monitoring and interpreting the communication on application-specific protocols.
+
++ Hybrid Intrusion Detection System :
+`````````````````````````````````````
+	- In the hybrid intrusion detection system, host agent or system data is combined with network information to develop a complete view of the network system.
+
+
+Detection Method of IDS:
+`````````````````````````
++ Signature-based:
+``````````````````
+- looking for specific patterns, such as byte sequences in network traffic
+- Although signature-based IDS can easily detect known attacks
+- it is impossible to detect new attacks, for which no pattern is available.
+
+
+
++ Anomaly-based:
+````````````````
+- a newer technology designed to detect and adapt to unknown attacks
+- detection method uses machine learning to create a defined model of trustworthy activity, and then compare new behavior against this trust model.
+
+-=-=-=-=-=-=
+
+
+What is an Intrusion Prevention System?
+```````````````````````````````````````
+
+- An intrusion prevention system (IPS) is an network security device used to monitor and respond to potential threats.
+
+- The main functions of an IPS are to identify suspicious activity, log relevant information, attempt to block the activity, and finally to report it.
+
+Detection mechanisms:
+`````````````````````
+
+- Address matching
+- HTTP string and substring matching
+- Generic pattern matching
+- TCP connection analysis
+- Packet anomaly detection
+- Traffic anomaly detection
+- TCP/UDP port matching
+
+
+IPS Classifications
+```````````````````
+
+Network-based intrusion prevention system (NIPS): 
+`````````````````````````````````````````````````
+- Analyzes protocol activity across the entire network, looking for any untrustworthy traffic.
+
+Wireless intrusion prevention system (WIPS): 
+````````````````````````````````````````````
+- Analyzes network protocol activity across the entire wireless network, looking for any untrustworthy traffic.
+
+Host-based intrusion prevention system (HIPS):
+``````````````````````````````````````````````
+- that follows a single host for malicious activity, and analyzes events occurring within said host.
+
+IPS Detection Methods
+`````````````````````
+Signature-based detection: 
+``````````````````````````
+- Signature-based IDS monitors packets in the network and compares with predetermined attack patterns, known as â€œsignaturesâ€.
+
+Statistical anomaly-based detection: 
+````````````````````````````````````
+- An anomaly-based IPS will monitor network traffic and compare it to expected traffic patterns. 
+
+- The baseline will identify what is "normal" for that network â€“ what sort of packets generally through the network and what protocols are used.
+
+- it may raise a false positive alarms

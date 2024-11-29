@@ -1,0 +1,49 @@
+Network Operations with Scapy
+------------------------------
+
+Scapy is a powerful interactive packet manipulation/crafting program/framework.
+
++ Install it
+
+# apt install scapy -y
+OR
+# yum install epel-release -y
+# yum install scapy -y
+
++ Interective shell:
+
+# scapy
+
+ICMP example:
+``````````````````` 
+ip.src eq 1.1.1.1 && ip.dst eq 8.8.8.8
+
+
+
+>>> x = IP()
+>>> y = ICMP()
+>>> x.show()
+>>> y.show()
+
+>>> x.src="x.x.x.x"
+>>> x.dst="x.x.x.x"
+
+>>> send(x/y/"LOLOLOLOL")
+or
+>>> send(x/y, count=10)
+or 
+>>> send(x/y, loop=1)
+
+
++ CHECK IN WIRESHARK
+_______________________________________
+Send TCP Packets:
+----------
+>>> a = IP()
+>>> b = TCP()
+>>> a.src="x.x.x.x"
+>>> a.dst="196.1.113.45"
+>>> b.sport=53
+>>> b.dport=80
+
+>>> send((a/b), count=10

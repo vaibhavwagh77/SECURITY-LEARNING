@@ -1,0 +1,371 @@
+squid
+-------\
+Squid is caching and forwarding HTTP web proxy. Which is used to speed up a web server by caching repeated requests, caching web, DNS and filtering traffic.
+
+
+# yum install squid -y
+# apt install squid -y
+
+
+# systemctl restart squid
+# systemctl enable squid
+
+To check:
+``````````
+# squid -k check | echo $?
+
+
+Port : 3128
+
+# firewall-cmd --zone=public --add-service=squid --permanent
+# firewall-cmd --reload
+
+
+RULE:
+`````
+http_access: Allows HTTP clients (browsers) to access the HTTP port. This is the primary access control list.
+
+http_reply_access: Allows HTTP clients (browsers) to receive the reply to their request. This further restricts permissions given by http_access.
+
+
+
+
+
+
+
+
+
+
+# squid -v
+
+Squid web cach dir: /var/spool/squid
+
+# vim /etc/squid/squid.conf
+
+Test the syntax of squid.conf:
+# squid -k parse
+
+# ls /var/log/squid
+# ls /var/spool/squid
+
+# systemctl restart squid
+OR
+# systemctl reload squid
+OR
+We can reload squid configuration file without restarting service:
+
+# squid -k reconfigure
+
+
+
+PORT : 3128
+------\
+
++++Allow local network
+
+# vim /etc/squid/squid.conf
+
+acl internet_allow src 192.168.206.121/32
+http_access allow internet_allow
+
+OR
+
+acl internet_allow src 192.168.206.0/24
+http_access allow internet_allow
+
+
+
+
+++++ Block IP 
+
+acl banned1 src 172.18.90.100-109
+http_access deny banned1
+http_reply_access allow all 
+
+
+-------\
+
+
+Go to browser and set proxy manually
+
+OR
+
+curl -x squid-proxy-server-IP:3128 http://google.com -I
+curl -O -L "https://www.redhat.com/index.html" -x "proxy.example.com:3128"
+
+OR
+
+NOTE: squidclient, a command-line tool that outputs the response to a Web request, similar to wget or curl
+
+# squidclient http://www.example.org
+
+HTTP/1.1 200 OK
+Cache-Control: max-age=604800
+Content-Type: text/html
+Date: Fri, 22 Jun 2016 12:00:00 GMT
+Expires: Fri, 29 Jun 2016 12:00:00 GMT
+Last-Modified: Fri, 09 Aug 2013 23:54:35 GMT
+Server: ECS (iad/182A)
+Vary: Accept-Encoding
+X-Cache: HIT
+x-ec-custom-error: 1
+Content-Length: 1270
+X-Cache: MISS from moon***************************** <<<<<<<< [1(a)]
+X-Cache-Lookup: MISS from moon:3128***************** <<<<<<<< [1(b)]
+Via: 1.1 moon (squid/3.5.16)************************ <<<<<<<< [2]
+Connection: close
+
+<!doctype html>
+<html>
+<head>
+    <title>Example domain</title>
+[...]
+</body>
+</html>
+
+
+
+
+[1(a)] : The value of the header X-Cache shows that the requested document was not in the Squid cache (MISS) of the computer moon. 
+
+[1(b)] : The example above contains two X-Cache lines. The second one X-Cache-Lookup is produced by the internal caching software of the originating Web server. 
+
+[2] : The value of the header Via shows the HTTP version, the name of the computer, and the version of Squid in use.  
+
+
+X-Forwarded-For Header:
+`````````````````````````
+=> If set to "on", squid will append your client's IP address in HTTP req it forwards like:
+
+	X-Forwarded-For: 192.1.1.1
+
+=> If set to "off", it will appear as
+
+	X-Forwarded-For: unknown
+
+=> If set to "transparent", Squid will not alter the "X-Forwarded-For" header in any way.
+
+=> If set to "delete", Squid will delete the extire "X-Forwarded-For" header.
+
+So modify the entry:
+
+forwarded_for delete
+
+And add these after "forwarded_for delete" in the squid.conf file:
+
+request_header_access Allow allow all
+request_header_access Authorization allow all
+request_header_access WWW-Authenticate allow all
+request_header_access Proxy-Authorization allow all
+request_header_access Proxy-Authenticate allow all
+request_header_access Cache-Control allow all
+request_header_access Content-Encoding allow all
+request_header_access Content-Length allow all
+request_header_access Content-Type allow all
+request_header_access Date allow all
+request_header_access Expires allow all
+request_header_access Host allow all
+request_header_access If-Modified-Since allow all
+request_header_access Last-Modified allow all
+request_header_access Location allow all
+request_header_access Pragma allow all
+request_header_access Accept allow all
+request_header_access Accept-Charset allow all
+request_header_access Accept-Encoding allow all
+request_header_access Accept-Language allow all
+request_header_access Content-Language allow all
+request_header_access Mime-Version allow all
+request_header_access Retry-After allow all
+request_header_access Title allow all
+request_header_access Connection allow all
+request_header_access Proxy-Connection allow all
+request_header_access User-Agent allow all
+request_header_access Cookie allow all
+request_header_access All deny all
+
+
+___________________
+OTHER IMP HEADERS: You can block/disallow them if you want
+follow_x_forwarded_for deny all
+forwarded_for delete [covered previously]
+via off
+____________________
+
+To change squid proxy hostname:
+```````````````````````````````
+# vim /etc/squid/squid.conf
+
+visible_hostname anything
+
+:wq
+
+
+
+-------\
++++++ check logs 
+
+# tail -f /var/log/squid/access.log
+-------\
+
+
+______________________________________________________________________
+Enable cache dir :
+```````````````````
+# how much disk cache do you want. It is 6400 MB in the following example, change it as per
+# your needs. Make sure you have that much disk space free.
+
+cache_dir ufs /var/spool/squid 6400 16 256
+
+- Squid creates 16 level-1 sub-directories in the /var/spool/squid/ directory.
+- Squid creates 256 sub-directories in each level-1 directory.
+
+# how much memory cache do you want? depends on how much memory you have on the machine
+cache_mem 200 MB
+
+# MAX OBJ SIZE
+maximum_object_size 500 MB
+maximum_object_size_in_memory 4 MB
+
+# Say "off" if you want the query string to appear in the squid logs.
+strip_query_terms off
+
+
+
+You can put any number of refresh_pattern lines in the configuration file:
+
+SYNATX: refresh_pattern [-i] regexp min percent max [options]
+
+-i 	: case-insensitive
+min 	: the time (in minutes) an object without an explicit expiry time should be considered fresh.
+max	: upper limit on how long objects without an explicit expiry time will be considered fresh.
+
+eg: 
+
+refresh_pattern -i \.jpg 30 20% 4320
+
+refresh_pattern -i \.(css|js|png) 30 20% 4320;
+
+#Facebook Pages
+refresh_pattern -i \.facebook.com.*\.(jpg|png|gif) 80 20% 4320;  
+
+
+
+how do I configure Squid not to cache a specific server? 
+````````````````````````````````````````````````````````
+acl someserver dstdomain .someserver.com
+cache deny someserver
+__________________________________________________________________
+
+
+Anonymous browsing
+```````````````````
+
+
+
+
+We will block domains such as facebook.com and youtube.com
+
+# vim /etc/squid/squid.conf 
+add lines:
+``````````
+acl blocksite1 dstdomain .facebook.com .youtube.com
+http_access deny blocksite1
+
+
+
+
+
++++++ To restrict by a part of the URI, do:
+
+acl banned_reddit url_regex ˆhttp://.*reddit.com/.*$
+http_access deny banned_reddit
+
+
+
+
+
++++++ If you want to allow/block specific website then make the entry of blockedsites 
+
+# cat > /etc/squid/blockedsites.squid
+.tesla.com
+.gmail.com
+.cdac.in
+
+#vim /etc/squid/squid.conf 
+
+acl blocksites dstdomain "/etc/squid/blockedsites.squid"
+http_access deny blocksites
+
+OR
+
+acl blocksites url_regex "/etc/squid/blockedsites.squid"
+http_access deny blocksites
+
+
+
+
+#systemctl restart squid.service
+-------\
+
+
++++++ Block ports
+``````````````````` 
+# vim /etc/squid/squid.conf 
+
+acl block_port port 80
+http_access deny block_port
+
+acl Safe_ports port 80 21 443 563 70 210 1025-65535
+http_access deny !Safe_ports
+
+
+
+
+
+
+
+
+
+
+
+
+
++++++ Block specific words
+
+# vim /etc/squid/ban_keywords.txt
+gambling
+spyware
+bad
+:wq
+
+# vim /etc/squid/squid.conf
+acl bad_keywords url_regex "/etc/squid/ban_keywords.txt"
+http_access deny bad_keywords
+
+
+
+------/
+
+++++++ You can also block files
+# vim /etc/squid/blockfiles.squid
+\.torrent.*$
+\.mp3.*$
+\.m3u8.*$
+\.mp4.*$
+
+# vim /etc/squid/squid.conf
+acl blockfiles urlpath_regex "/etc/squid/blockfiles.squid"
+http_access deny blockfiles
+
+
+-------\
+
+
+
+++++++ Set working hours
+#vim /etc/squid/squid.conf
+
+
+acl working_hours time 10:00-17:00
+http_access deny working_hours
+------------
