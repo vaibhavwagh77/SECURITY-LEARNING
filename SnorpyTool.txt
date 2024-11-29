@@ -1,0 +1,19 @@
+
+*** A useful tool to write a basic snort rule. https://github.com/chrisjd20/Snorpy
+
+# git clone https://github.com/chrisjd20/Snorpy.git
+# cd Snorpy/
+# docker build -t snorpy_app .
+# docker run -p 8080:8080 -it --rm --name snorpy_container snorpy_app
+
+
+OR
+
+# cd Snorpy
+# apt install npm node -y
+# npm install express
+# node app.js
+worker 2
+worker 1
+
+http://localhost:8080
